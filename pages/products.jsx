@@ -1,3 +1,5 @@
+"use client";
+
 import Sidebar from "@/components/Sidebar";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
@@ -768,33 +770,30 @@ const DeleteProductButton = ({ onClick }) => {
 
 const Products = () => {
   const auth = isAuthenticated();
-  const seller = JSON.parse(localStorage.getItem("seller"));
+  const seller = getSellerData();
   const jwt = auth.data?.jwt;
   const [products, setProducts] = useState([]);
   const toast = useToast();
 
   const getProducts = async () => {
-    let res = await axios.get(
-      `https://cloudmagician.co.in/api/seller-products/${seller.id}?populate=*`,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${jwt}`,
-        },
-      }
-    );
-    console.log(res);
-    setProducts(res.data?.ecommerce_products);
-
-    // return res;
+    if (typeof window !== "undefined") {
+      let res = await axios.get(
+        `https://cloudmagician.co.in/api/seller-products/${seller?.id}?populate=*`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log(res);
+      setProducts(res.data?.ecommerce_products);
+    }
   };
 
   useEffect(() => {
-    getProducts();
-    // .then((data) => {
-    //   setProducts(data.data.data);
-    //   // console.log(products);
-    // });
+    if (typeof window !== "undefined") {
+      getProducts();
+    }
   }, []);
 
   const handleDelete = async (id) => {
