@@ -39,6 +39,7 @@ export const data = {
     },
   ],
 };
+
 const Dashboard = () => {
   return (
     <>
