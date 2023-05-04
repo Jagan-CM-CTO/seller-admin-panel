@@ -95,6 +95,12 @@ export default function Home() {
       .catch((err) => setError("Invalid email or password"));
   };
 
+  // Define postData here
+  const postData = {
+    title: "My Blog Post",
+    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  };
+
   return (
     <>
       <Head>
@@ -111,15 +117,15 @@ export default function Home() {
           bgGradient="linear(to-l, #7928CA, #DA0155)"
         >
           <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-            <Box rounded={"lg"} bg="white" boxShadow="lg" p={8}>
-              <Stack align={"center"}>
-                <Heading>Seller Login</Heading>
-              </Stack>
-              <Box mt={8}>
-                <form>
-                  <Stack spacing={4}>
-                    {error && <Text color="red">
-                    {error}</Text>}
+<Box rounded={"lg"} bg="white" boxShadow="lg" p={8}>
+<Stack align={"center"}>
+<Heading>Seller Login</Heading>
+</Stack>
+<Box mt={8}>
+<form>
+<Stack spacing={4}>
+{error && <Text color="red">
+{error}</Text>}
 <Input
 type="email"
 placeholder="Email"
@@ -135,21 +141,20 @@ setPassword(event.currentTarget.value)
 }
 />
 <Button
-                  colorScheme="purple"
-                  type="submit"
-                  onClick={(event) => onSubmit(event)}
-                >
-                  Sign in
-                </Button>
-              </Stack>
-            </form>
-          </Box>
-        </Box>
-      </Stack>
-    </Flex>
-  </main>
-  <PostDetails post={postData} />
+colorScheme="purple"
+type="submit"
+onClick={(event) => onSubmit(event)}
+>
+Sign in
+</Button>
+</Stack>
+</form>
+</Box>
+</Box>
+</Stack>
+</Flex>
+<PostDetails post={postData} />
+</main>
 </>
 );
 }
-
