@@ -19,6 +19,21 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { isAdmin } from "@/helper/auth";
 
+const PostDetails = ({ post }) => {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <h1>Data is loading</h1>;
+  }
+
+  return (
+    <div>
+      <h1>{post.title}</h1>
+      <p>{post.body}</p>
+    </div>
+  );
+};
+
 export default function Home() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -103,36 +118,38 @@ export default function Home() {
               <Box mt={8}>
                 <form>
                   <Stack spacing={4}>
-                    {error && <Text color="red">{error}</Text>}
-                    <Input
-                      type="email"
-                      placeholder="Email"
-                      isRequired
-                      onChange={(event) => setEmail(event.currentTarget.value)}
-                    />
-                    <Input
-                      type="password"
-                      placeholder="Password"
-                      isRequired
-                      onChange={(event) =>
-                        setPassword(event.currentTarget.value)
-                      }
-                    />
-
-                    <Button
-                      colorScheme="purple"
-                      type="submit"
-                      onClick={(event) => onSubmit(event)}
-                    >
-                      Sign in
-                    </Button>
-                  </Stack>
-                </form>
-              </Box>
-            </Box>
-          </Stack>
-        </Flex>
-      </main>
-    </>
-  );
+                    {error && <Text color="red">
+                    {error}</Text>}
+<Input
+type="email"
+placeholder="Email"
+isRequired
+onChange={(event) => setEmail(event.currentTarget.value)}
+/>
+<Input
+type="password"
+placeholder="Password"
+isRequired
+onChange={(event) =>
+setPassword(event.currentTarget.value)
 }
+/>
+<Button
+                  colorScheme="purple"
+                  type="submit"
+                  onClick={(event) => onSubmit(event)}
+                >
+                  Sign in
+                </Button>
+              </Stack>
+            </form>
+          </Box>
+        </Box>
+      </Stack>
+    </Flex>
+  </main>
+  <PostDetails post={postData} />
+</>
+);
+}
+
