@@ -230,7 +230,9 @@ const Orders = () => {
 
   const auth = isAuthenticated();
   const jwt = auth.data?.jwt;
-  const seller = JSON.parse(localStorage.getItem("seller"));
+  if (typeof window !== "undefined") {
+    const seller = JSON.parse(localStorage.getItem("seller"));
+  }
   const getOrders = async () => {
     let res = await axios.get(
       "https://cloudmagician.co.in/api/orders?pagination[pageSize]=100&populate=*",
