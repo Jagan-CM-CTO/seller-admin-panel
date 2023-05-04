@@ -19,21 +19,6 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { isAdmin } from "@/helper/auth";
 
-const PostDetails = ({ post }) => {
-  const router = useRouter();
-
-  if (router.isFallback) {
-    return <h1>Data is loading</h1>;
-  }
-
-  return (
-    <div>
-      <h1>{post.title}</h1>
-      <p>{post.body}</p>
-    </div>
-  );
-};
-
 export default function Home() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -63,8 +48,6 @@ export default function Home() {
   };
 
   const authenticate = (data, next) => {
-    console.log(data);
-    console.log("I'm done!");
     if (typeof window !== "undefined") {
       localStorage.setItem("jwt", JSON.stringify(data));
       next();
@@ -95,12 +78,6 @@ export default function Home() {
       .catch((err) => setError("Invalid email or password"));
   };
 
-  // Define postData here
-  const postData = {
-    title: "My Blog Post",
-    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-  };
-
   return (
     <>
       <Head>
@@ -117,44 +94,43 @@ export default function Home() {
           bgGradient="linear(to-l, #7928CA, #DA0155)"
         >
           <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-<Box rounded={"lg"} bg="white" boxShadow="lg" p={8}>
-<Stack align={"center"}>
-<Heading>Seller Login</Heading>
-</Stack>
-<Box mt={8}>
-<form>
-<Stack spacing={4}>
-{error && <Text color="red">
-{error}</Text>}
-<Input
-type="email"
-placeholder="Email"
-isRequired
-onChange={(event) => setEmail(event.currentTarget.value)}
-/>
-<Input
-type="password"
-placeholder="Password"
-isRequired
-onChange={(event) =>
-setPassword(event.currentTarget.value)
-}
-/>
-<Button
-colorScheme="purple"
-type="submit"
-onClick={(event) => onSubmit(event)}
->
-Sign in
-</Button>
-</Stack>
-</form>
-</Box>
-</Box>
-</Stack>
-</Flex>
-<PostDetails post={postData} />
-</main>
-</>
-);
+            <Box rounded={"lg"} bg="white" boxShadow="lg" p={8}>
+              <Stack align={"center"}>
+                <Heading>Seller Login</Heading>
+              </Stack>
+              <Box mt={8}>
+                <form>
+                  <Stack spacing={4}>
+                    {error && <Text color="red">{error}</Text>}
+                    <Input
+                      type="email"
+                      placeholder="Email"
+                      isRequired
+                      onChange={(event) => setEmail(event.currentTarget.value)}
+                    />
+                    <Input
+                      type="password"
+                      placeholder="Password"
+                      isRequired
+                      onChange={(event) =>
+                        setPassword(event.currentTarget.value)
+                      }
+                    />
+
+                    <Button
+                      colorScheme="purple"
+                      type="submit"
+                      onClick={(event) => onSubmit(event)}
+                    >
+                      Sign in
+                    </Button>
+                  </Stack>
+                </form>
+              </Box>
+            </Box>
+          </Stack>
+        </Flex>
+      </main>
+    </>
+  );
 }
