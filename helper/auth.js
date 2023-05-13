@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useRouter } from "next/router";
+import { API_URL } from "./API";
 
 export const signin = async (user) => {
   let res = await axios.post(
-    "https://cloudmagician.co.in/api/auth/local",
+    `${API_URL}auth/local`,
     {
       identifier: user.email,
       password: user.password,
@@ -18,15 +19,12 @@ export const signin = async (user) => {
 };
 
 export const isAdmin = async (token) => {
-  let res = await axios.get(
-    `https://cloudmagician.co.in/api/users/me?populate=*`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  localStorage.setItem("seller", JSON.stringify(res.data));
+  let res = await axios.get(`${API_URL}users/me?populate=*`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  localStorage.setItem("seller", JSON.stringify(res.data.seller_account));
   return res;
 };
 
