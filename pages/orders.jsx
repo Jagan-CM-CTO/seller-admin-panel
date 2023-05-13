@@ -1,278 +1,635 @@
-import React from "react";
+import Sidebar from "@/components/Sidebar";
+import Head from "next/head";
+import React, { useEffect, useState } from "react";
+import { MdOutlineSearch } from "react-icons/md";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
-  IconButton,
-  Avatar,
-  Box,
-  CloseButton,
-  Flex,
-  HStack,
-  VStack,
-  Icon,
-  useColorModeValue,
-  Drawer,
-  DrawerContent,
-  Text,
-  useDisclosure,
-  BoxProps,
-  FlexProps,
-  Menu,
+  useToast,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
+  Menu,
+  Text,
+  Stack,
+  InputGroup,
+  InputRightElement,
+  Table,
+  Thead,
+  Divider,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Flex,
+  Button,
+  Badge,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Input,
 } from "@chakra-ui/react";
-import {
-  FiTrendingUp,
-  FiMenu,
-  FiBell,
-  FiChevronDown,
-  FiBox,
-  FiTag,
-  FiLayers,
-} from "react-icons/fi";
-import { BsTicketDetailed } from "react-icons/bs";
+import axios from "axios";
 import { useRouter } from "next/router";
-import Link from "next/link";
-// import { Link } from "@chakra-ui/next-js";
+import { isAuthenticated } from "@/helper/auth";
+import { API_URL } from "@/helper/API";
 
-const LinkItems = [
-  { name: "Sellers", icon: FiTrendingUp, link: "/dashboard" },
-  {
-    name: "Recharge Agents",
-    icon: FiTag,
-    link: "/rechargeagents",
-  },
-  { name: "Host Agents", icon: FiLayers, link: "/host-agents" },
-  { name: "Orders", icon: FiBox, link: "/orders" },
-  {
-    name: "Complaint Tickets",
-    icon: BsTicketDetailed,
-    link: "/complaint-ticket",
-  },
-];
-
-export default function Sidebar({ children }) {
+const ViewOrderModal = ({ btnText, order }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const router = useRouter();
+
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-      <SidebarContent
-        onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
-      />
-      <Drawer
-        autoFocus={false}
-        isOpen={isOpen}
-        placement="left"
-        onClose={onClose}
-        returnFocusOnClose={false}
-        onOverlayClick={onClose}
-        size="full"
-      >
-        <DrawerContent>
-          <SidebarContent onClose={onClose} />
-        </DrawerContent>
-      </Drawer>
-      {/* mobilenav */}
-      <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
-        {children}
-      </Box>
-    </Box>
-  );
-}
+    <>
+      <Button colorScheme="brand.400" bg="brand.400" size="md" onClick={onOpen}>
+        {btnText ? btnText : "View Details"}
+      </Button>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Product Details</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text fontSize={"sm"} as={"b"}>
+              Order ID
+            </Text>
+            <Text mb={2}>{order.id}</Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"}>
+              Sadad Order ID
+            </Text>
+            <Text mb={2}>{order.attributes.order_id}</Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Transaction ID
+            </Text>
+            <Text mb={2}>
+              {order.attributes.transaction?.data?.attributes?.transaction_id}
+            </Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Order Status
+            </Text>
 
-const SidebarContent = ({ onClose, ...rest }) => {
-  const router = useRouter();
+            <Text mb={2}>
+              <Badge colorScheme="green">{order.attributes.status}</Badge>
+            </Text>
 
-  const handlePush = (url) => {
-    if (!(router.pathname === url || `${router.pathname}#` === url)) {
-      router
-        .push(url, undefined, { shallow: true })
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Customer Name
+            </Text>
+            <Text mb={2}>{order.attributes.customer_name}</Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Customer Email
+            </Text>
+            <Text mb={2}>{order.attributes.email}</Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Receiver Name
+            </Text>
+            <Text mb={2}>
+              {order.attributes.shipping_address?.data?.attributes?.identifier}
+            </Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Building Number
+            </Text>
+            <Text mb={2}>
+              {
+                order.attributes.shipping_address?.data?.attributes
+                  ?.building_number
+              }
+            </Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Unit/floor Number
+            </Text>
+            <Text mb={2}>
+              {order.attributes.shipping_address?.data?.attributes?.unit_number}
+            </Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Street Number
+            </Text>
+            <Text mb={2}>
+              {
+                order.attributes.shipping_address?.data?.attributes
+                  ?.street_number
+              }
+            </Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Zone Number
+            </Text>
+            <Text mb={2}>
+              {order.attributes.shipping_address?.data?.attributes?.zone_number}
+            </Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              City
+            </Text>
+            <Text mb={2}>
+              {order.attributes.shipping_address?.data?.attributes?.city}
+            </Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Country
+            </Text>
+            <Text mb={2}>
+              {order.attributes.shipping_address?.data?.attributes?.country}
+            </Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Mobile Number
+            </Text>
+            <Text mb={2}>
+              {
+                order.attributes.shipping_address?.data?.attributes
+                  ?.mobile_number
+              }
+            </Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Phone Number
+            </Text>
+            <Text mb={2}>
+              {
+                order.attributes.shipping_address?.data?.attributes
+                  ?.phone_number
+              }
+            </Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              {`Receiver's Peace Garden User ID`}
+            </Text>
+            <Text mb={2}>
+              {
+                order.attributes.shipping_address?.data?.attributes
+                  ?.receiver_user_pg_id
+              }
+            </Text>
+            <Divider />
 
-        .then((hash) => {
-          if (hash) router.push(hash);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
-  };
-  return (
-    <Box
-      transition="3s ease"
-      bg={useColorModeValue("white", "gray.900")}
-      borderRight="1px"
-      borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={{ base: "full", md: 60 }}
-      pos="fixed"
-      h="full"
-      {...rest}
-    >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text
-          fontSize="2xl"
-          fontFamily="monospace"
-          fontWeight="bold"
-          color="#DA0155"
-        >
-          PeaceGarden
-        </Text>
-        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
-      </Flex>
-      <Flex justify={"center"} align={"center"} direction={"column"}>
-        <Avatar
-          size={"xl"}
-          src={
-            "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1148&q=80"
-          }
-        />
-        <Text fontSize={"xl"} fontWeight="semibold" mt="2">
-          Hello Emiram!
-        </Text>
-      </Flex>
-      {LinkItems.map((link) => (
-        <NavItem
-          key={link.name}
-          icon={link.icon}
-          bg={router.pathname == link.link ? "brand.400" : ""}
-          color={router.pathname == link.link ? "white" : ""}
-          my={2}
-          href={link.link}
-        >
-          {link.name}
-        </NavItem>
-      ))}
-    </Box>
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Pincode
+            </Text>
+            <Text mb={2}>{order.attributes.pincode}</Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Amount
+            </Text>
+            <Text mb={2}>${order.attributes.amount}</Text>
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Pincode
+            </Text>
+            <Text mb={2}>{order.attributes.pincode}</Text>
+            <Divider />
+
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Products
+            </Text>
+            {order.attributes.products.data.length ? (
+              order.attributes.products.data.map((product, i) => (
+                <Text mb={2} key={i}>
+                  {product.attributes.product_name}
+                </Text>
+              ))
+            ) : (
+              <Text mb={2} _disabled>
+                No products found
+              </Text>
+            )}
+            <Divider />
+            <Text fontSize={"sm"} as={"b"} mt={8}>
+              Order Status
+            </Text>
+            <Text mb={2}>{order.attributes.status}</Text>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 
-const NavItem = ({ href, icon, children, ...rest }) => {
-  return (
-    <Link
-      href={href}
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
-      legacyBehavior
-    >
-      <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
-        _hover={{
-          bg: "#DA0155",
-          color: "white",
-        }}
-        {...rest}
-      >
-        {icon && (
-          <Icon
-            mr="4"
-            fontSize="16"
-            _groupHover={{
-              color: "white",
-            }}
-            as={icon}
-          />
-        )}
-        {children}
-      </Flex>
-    </Link>
-  );
-};
+const Orders = () => {
+  const [orders, setOrders] = useState([]);
+  const [pendingSearch, setPendingSearch] = useState(false);
+  const [completedSearch, setCompletedSearch] = useState(false);
+  const [canceledSeach, setCanceledSeach] = useState(false);
+  const toast = useToast();
 
-const MobileNav = ({ onOpen, ...rest }) => {
-  const router = useRouter();
+  const updateStatus = async (id, status) => {
+    console.log("hurrehh", status);
+    let auth = isAuthenticated();
+    let jwt = auth.data?.jwt;
+    let reqBody = { status: status };
 
-  const signout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("jwt");
-      router.push("/");
+    let res = await axios.put(
+      `${API_URL}orders/${id}`,
+      {
+        data: reqBody,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      }
+    );
+    console.log(res);
+    if (res.status == 200) {
+      console.log("success", res.data);
+      toast({
+        title: "Success",
+        description: "Status updated successfully",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+      getOrders();
     }
   };
 
+  const auth = isAuthenticated();
+  const jwt = auth.data?.jwt;
+  const getOrders = async () => {
+    console.log("I'm innnn");
+    let res = await axios.get(
+      `${API_URL}orders?pagination[pageSize]=100&populate=*`,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${jwt}`,
+        },
+      }
+    );
+    setOrders(res.data.data);
+  };
+
+  useEffect(() => {
+    getOrders();
+  }, []);
+
   return (
-    <Flex
-      ml={{ base: 0, md: 60 }}
-      px={{ base: 4, md: 4 }}
-      height="20"
-      alignItems="center"
-      bg={useColorModeValue("white", "gray.900")}
-      borderBottomWidth="1px"
-      borderBottomColor={useColorModeValue("gray.200", "gray.700")}
-      justifyContent={{ base: "space-between", md: "flex-end" }}
-      {...rest}
-    >
-      <IconButton
-        display={{ base: "flex", md: "none" }}
-        onClick={onOpen}
-        variant="outline"
-        aria-label="open menu"
-        icon={<FiMenu />}
-      />
+    <>
+      <Head>
+        <title>Peace Garden</title>
+        <meta name="description" content="Generated by create next app" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <main>
+        <Sidebar>
+          <Flex justify={"space-between"}>
+            <Text fontSize={"2xl"} fontWeight={"semibold"}>
+              Manage Orders
+            </Text>
+          </Flex>
 
-      <Text
-        display={{ base: "flex", md: "none" }}
-        fontSize="2xl"
-        fontFamily="monospace"
-        fontWeight="bold"
-      >
-        Logo
-      </Text>
-
-      <HStack spacing={{ base: "0", md: "6" }}>
-        <IconButton
-          size="lg"
-          variant="ghost"
-          aria-label="open menu"
-          icon={<FiBell />}
-        />
-        <Flex alignItems={"center"}>
-          <Menu>
-            <MenuButton
-              py={2}
-              transition="all 0.3s"
-              _focus={{ boxShadow: "none" }}
+          <Flex
+            justify={"space-between"}
+            gap={10}
+            mt={4}
+            flexWrap={"wrap"}
+            px={2}
+          >
+            <Stack
+              minWidth="23vw"
+              bg="white"
+              rounded={"md"}
+              overflow={"hidden"}
+              boxShadow={"2xl"}
             >
-              <HStack>
-                <Avatar
-                  size={"sm"}
-                  src={
-                    "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1148&q=80"
+              <Text
+                fontSize={22}
+                fontWeight={"semibold"}
+                bg={"brand.400"}
+                textAlign="center"
+                py={2}
+                color="white"
+              >
+                Pending Orders
+              </Text>
+              <InputGroup
+                maxW="60vw"
+                mx="auto"
+                mt={6}
+                bg="white"
+                rounded="md"
+                // boxShadow={"2xl"}
+              >
+                <InputRightElement color="brand.400">
+                  <MdOutlineSearch />
+                </InputRightElement>
+                <Input
+                  type="text"
+                  name="Secrch"
+                  placeholder="Search..."
+                  onChange={(e) =>
+                    setPendingSearch(e.target.value.toLowerCase())
                   }
+                  py={4}
                 />
-                <VStack
-                  display={{ base: "none", md: "flex" }}
-                  alignItems="flex-start"
-                  spacing="1px"
-                  ml="2"
-                >
-                  <Text fontSize="sm">Emiram</Text>
-                  <Text fontSize="xs" color="gray.600">
-                    Super Admin
-                  </Text>
-                </VStack>
-                <Box display={{ base: "none", md: "flex" }}>
-                  <FiChevronDown />
-                </Box>
-              </HStack>
-            </MenuButton>
-            <MenuList
-              bg={useColorModeValue("white", "gray.900")}
-              borderColor={useColorModeValue("gray.200", "gray.700")}
+              </InputGroup>
+              <TableContainer bg={"#fff"} mt={5}>
+                <Table variant="simple">
+                  <Thead>
+                    <tr textAlign="center">
+                      <Th textAlign="center">Order ID</Th>
+                      <Th textAlign="right">Update Status</Th>
+                    </tr>
+                  </Thead>
+                  <Tbody>
+                    {orders
+                      .filter((order) => {
+                        if (!pendingSearch) {
+                          return true;
+                        }
+
+                        if (order.id?.toString().includes(pendingSearch)) {
+                          return true;
+                        }
+
+                        return false;
+                      })
+                      .filter((order) => order.attributes.status == "pending")
+                      .map((order, i) => {
+                        return (
+                          <Tr key={i}>
+                            <Td textAlign="center">
+                              <ViewOrderModal
+                                btnText={order.id}
+                                order={order}
+                                onUpdateStatus={() =>
+                                  updateStatus(order.id, "canceled")
+                                }
+                              />
+                            </Td>
+                            <Td textAlign="right">
+                              <Menu>
+                                <MenuButton
+                                  as={Button}
+                                  color="dark"
+                                  bg="white.600"
+                                  rightIcon={<ChevronDownIcon />}
+                                >
+                                  Update Status
+                                </MenuButton>
+                                <MenuList>
+                                  <MenuItem
+                                    as={Button}
+                                    onClick={() =>
+                                      updateStatus(order.id, "completed")
+                                    }
+                                  >
+                                    Mark as Completed
+                                  </MenuItem>
+                                  <MenuItem
+                                    as={Button}
+                                    onClick={() =>
+                                      updateStatus(order.id, "canceled")
+                                    }
+                                  >
+                                    Mark as Canceled
+                                  </MenuItem>
+                                </MenuList>
+                              </Menu>
+                            </Td>
+                          </Tr>
+                        );
+                      })}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </Stack>
+            <Stack
+              minWidth="23vw"
+              bg="white"
+              rounded={"md"}
+              overflow={"hidden"}
+              boxShadow={"2xl"}
             >
-              {/* <Link href="/profile">
-                <MenuItem>Profile</MenuItem>
-              </Link> */}
-              {/* <MenuDivider /> */}
-              <MenuItem onClick={signout}>Sign out</MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
-      </HStack>
-    </Flex>
+              <Text
+                fontSize={22}
+                fontWeight={"semibold"}
+                bg={"brand.400"}
+                textAlign="center"
+                py={2}
+                color="white"
+              >
+                Completed Orders
+              </Text>
+              <InputGroup
+                mx={10}
+                mt={4}
+                mb={2}
+                bg="white"
+                rounded="none"
+                // boxShadow={"2xl"}
+              >
+                <InputRightElement color="brand.400">
+                  <MdOutlineSearch />
+                </InputRightElement>
+                <Input
+                  type="text"
+                  name="Secrch"
+                  placeholder="Search..."
+                  onChange={(e) =>
+                    setCompletedSearch(e.target.value.toLowerCase())
+                  }
+                  py={4}
+                />
+              </InputGroup>
+              <TableContainer bg={"#fff"} mt={5}>
+                <Table variant="simple">
+                  <Thead>
+                    <tr>
+                      <Th textAlign="center">Order ID</Th>
+                      <Th textAlign="right">Update Status</Th>
+                    </tr>
+                  </Thead>
+                  <Tbody>
+                    {orders
+                      .filter((order) => {
+                        if (!completedSearch) {
+                          return true;
+                        }
+
+                        if (order.id?.toString().includes(completedSearch)) {
+                          return true;
+                        }
+
+                        return false;
+                      })
+                      .filter((order) => order.attributes.status == "completed")
+                      .map((order, i) => {
+                        return (
+                          <Tr key={i}>
+                            <Td textAlign="center">
+                              <ViewOrderModal
+                                btnText={order.id}
+                                order={order}
+                              />
+                            </Td>
+                            <Td textAlign="right">
+                              <Menu>
+                                <MenuButton
+                                  as={Button}
+                                  color="dark"
+                                  bg="white.600"
+                                  rightIcon={<ChevronDownIcon />}
+                                >
+                                  Update Status
+                                </MenuButton>
+                                <MenuList>
+                                  <MenuItem
+                                    as={Button}
+                                    onClick={() =>
+                                      updateStatus(order.id, "pending")
+                                    }
+                                  >
+                                    Mark as Pending
+                                  </MenuItem>
+                                  <MenuItem
+                                    as={Button}
+                                    onClick={() =>
+                                      updateStatus(order.id, "canceled")
+                                    }
+                                  >
+                                    Mark as Canceled
+                                  </MenuItem>
+                                </MenuList>
+                              </Menu>
+                            </Td>
+                          </Tr>
+                        );
+                      })}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </Stack>
+            <Stack
+              minWidth="23vw"
+              bg="white"
+              rounded={"md"}
+              overflow={"hidden"}
+              boxShadow={"2xl"}
+            >
+              <Text
+                fontSize={22}
+                fontWeight={"semibold"}
+                bg={"brand.400"}
+                textAlign="center"
+                py={2}
+                color="white"
+              >
+                Canceled Orders
+              </Text>
+              <InputGroup
+                mx={10}
+                mt={4}
+                mb={2}
+                bg="white"
+                rounded="none"
+                // boxShadow={"2xl"}
+              >
+                <InputRightElement color="brand.400">
+                  <MdOutlineSearch />
+                </InputRightElement>
+                <Input
+                  type="text"
+                  name="Secrch"
+                  placeholder="Search..."
+                  onChange={(e) =>
+                    setCanceledSeach(e.target.value.toLowerCase())
+                  }
+                  py={4}
+                />
+              </InputGroup>
+              <TableContainer bg={"#fff"} mt={5}>
+                <Table variant="simple">
+                  <Thead>
+                    <tr>
+                      <Th textAlign={"center"}>Order ID</Th>
+                      <Th textAlign={"right"}>Update Status</Th>
+                    </tr>
+                  </Thead>
+                  <Tbody>
+                    {orders
+                      .filter((order) => {
+                        if (!canceledSeach) {
+                          return true;
+                        }
+
+                        if (order.id?.toString().includes(canceledSeach)) {
+                          return true;
+                        }
+
+                        return false;
+                      })
+                      .filter((order) => order.attributes.status == "canceled")
+                      .map((order, i) => {
+                        return (
+                          <Tr key={i}>
+                            <Td textAlign="center">
+                              <ViewOrderModal
+                                btnText={order.id}
+                                order={order}
+                              />
+                            </Td>
+                            <Td textAlign="right">
+                              <Menu>
+                                <MenuButton
+                                  as={Button}
+                                  color="dark"
+                                  bg="white.600"
+                                  rightIcon={<ChevronDownIcon />}
+                                >
+                                  Update Status
+                                </MenuButton>
+                                <MenuList>
+                                  <MenuItem
+                                    as={Button}
+                                    onClick={() =>
+                                      updateStatus(order.id, "pending")
+                                    }
+                                  >
+                                    Mark as Pending
+                                  </MenuItem>
+                                  <MenuItem
+                                    as={Button}
+                                    onClick={() =>
+                                      updateStatus(order.id, "completed")
+                                    }
+                                  >
+                                    Mark as Completed
+                                  </MenuItem>
+                                </MenuList>
+                              </Menu>
+                            </Td>
+                          </Tr>
+                        );
+                      })}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </Stack>
+          </Flex>
+        </Sidebar>
+      </main>
+    </>
   );
 };
+
+export default Orders;
