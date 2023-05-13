@@ -18,6 +18,7 @@ const inter = Inter({ subsets: ["latin"] });
 import { useRouter } from "next/router";
 import axios from "axios";
 import { isAdmin } from "@/helper/auth";
+import { API_URL } from "@/helper/API";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -33,7 +34,7 @@ export default function Home() {
 
   const signin = async (user) => {
     let res = await axios.post(
-      "https://cloudmagician.co.in/api/auth/local",
+      `${API_URL}auth/local`,
       {
         identifier: user.email,
         password: user.password,
@@ -48,8 +49,6 @@ export default function Home() {
   };
 
   const authenticate = (data, next) => {
-    console.log(data);
-    console.log("I'm done!");
     if (typeof window !== "undefined") {
       localStorage.setItem("jwt", JSON.stringify(data));
       next();
@@ -77,7 +76,10 @@ export default function Home() {
           }
         });
       })
-      .catch((err) => setError("Invalid email or password"));
+      .catch((err) => {
+        console.log("HEYYYY", err);
+        setError("Invalid email or password");
+      });
   };
 
   return (
