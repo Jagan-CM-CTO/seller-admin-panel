@@ -1,3 +1,5 @@
+"use client";
+
 import Sidebar from "@/components/Sidebar";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
@@ -49,11 +51,11 @@ import { MdDeleteOutline } from "react-icons/md";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { getSellerData, isAuthenticated } from "@/helper/auth";
+import { API_URL } from "@/helper/API";
 
 const AddProductModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const user = isAuthenticated();
 
   const [values, setvalues] = useState({
     product_name: "",
@@ -89,26 +91,21 @@ const AddProductModal = () => {
   const router = useRouter();
 
   const getCategories = async () => {
-    let res = await axios.get(
-      "https://cloudmagician.co.in/api/ecommerce-frontpages?populate=*"
-    );
+    let res = await axios.get(`${API_URL}ecommerce-frontpages?populate=*`);
     return res;
   };
+
   const auth = isAuthenticated();
   const jwt = auth.data?.jwt;
 
   const createProduct = async (product) => {
     console.log(product);
-    let res = await axios.post(
-      "https://cloudmagician.co.in/api/ecommerce-products",
-      product,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${jwt}`,
-        },
-      }
-    );
+    let res = await axios.post(`${API_URL}ecommerce-products`, product, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     return res;
   };
 
@@ -119,6 +116,7 @@ const AddProductModal = () => {
     console.log(subCateList);
     setvalues({ ...values, ecommerce_category: event.target.value.id });
     setSubCategories(subCateList);
+    handleChange("ecommerce_category");
   };
 
   const handleChange = (name) => (event) => {
@@ -151,6 +149,7 @@ const AddProductModal = () => {
           long_description: "",
           selling_price: "",
           retail_price: "",
+          // ecommerce_category: "",
           ecommerce_subcategory: "",
         });
         console.log(data);
@@ -198,7 +197,7 @@ const AddProductModal = () => {
             <FormControl isRequired>
               <FormLabel>Product Name</FormLabel>
               <Input
-                placeholder="eg. Apple Airpods Pro"
+                placeholder=""
                 onChange={handleChange("product_name")}
                 name="product_name"
                 value={product_name}
@@ -260,6 +259,7 @@ const AddProductModal = () => {
                 <FormLabel>Choose Category</FormLabel>
                 <Select
                   placeholder="Select Category"
+                  // value={ecommerce_category}
                   onChange={(event) => {
                     onCateogryChange(event);
                   }}
@@ -295,7 +295,7 @@ const AddProductModal = () => {
 
           <ModalFooter>
             <Button bg="brand.400" color="white" onClick={onSubmit}>
-              Add Product
+              Submit
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -326,7 +326,7 @@ const ViewProductModal = ({ productId }) => {
   const loadProduct = async () => {
     console.log(productId);
     let res = await axios.get(
-      `https://cloudmagician.co.in/api/ecommerce-products/${productId}?populate=*`
+      `${API_URL}ecommerce-products/${productId}?populate=*`
     );
     let data = await res.data.data;
     console.log(data);
@@ -401,6 +401,11 @@ const ViewProductModal = ({ productId }) => {
             </Text>
             <Text mb={2}>${values.selling_price}</Text>
             <Divider />
+            {/* <Text fontSize={"sm"} as={"b"} mt={8}>
+              Category
+            </Text>
+            <Text mb={2}>{values.ecommerce_category}</Text>
+            <Divider /> */}
             <Text fontSize={"sm"} as={"b"} mt={8}>
               Sub-category
             </Text>
@@ -430,7 +435,7 @@ const EditProductModal = ({ productId }) => {
     retail_price: "",
     // ecommerce_category: "",
     ecommerce_subcategory: "",
-    visibility: "",
+
     product_image: "",
     // loading: false,
     // error: "",
@@ -448,7 +453,6 @@ const EditProductModal = ({ productId }) => {
     // ecommerce_category,
     ecommerce_subcategory,
     product_image,
-    visibility,
     // formData,
   } = values;
 
@@ -457,9 +461,7 @@ const EditProductModal = ({ productId }) => {
   const router = useRouter();
 
   const getCategories = async () => {
-    let res = await axios.get(
-      "https://cloudmagician.co.in/api/ecommerce-frontpages?populate=*"
-    );
+    let res = await axios.get(`${API_URL}ecommerce-frontpages?populate=*`);
     return res;
   };
 
@@ -469,7 +471,7 @@ const EditProductModal = ({ productId }) => {
   const updateProduct = async (product) => {
     console.log(product);
     let res = await axios.put(
-      `https://cloudmagician.co.in/api/ecommerce-products/${productId}`,
+      `${API_URL}ecommerce-products/${productId}`,
       product,
       {
         headers: {
@@ -549,10 +551,10 @@ const EditProductModal = ({ productId }) => {
   const loadProduct = async () => {
     console.log(productId);
     let res = await axios.get(
-      `https://cloudmagician.co.in/api/ecommerce-products/${productId}?populate=*`
+      `${API_URL}ecommerce-products/${productId}?populate=*`
     );
     let data = await res.data.data;
-
+    console.log(data);
     setvalues({
       ...values,
       product_name: data.attributes.product_name
@@ -570,9 +572,7 @@ const EditProductModal = ({ productId }) => {
       retail_price: data.attributes.retail_price
         ? data.attributes.retail_price
         : "",
-      visibility: data.attributes.retail_price
-        ? data.attributes.visibility
-        : "",
+
       // ecommerce_category:
       //   data.attributes?.ecommerce_category?.data?.attributes?.title,
       // ecommerce_subcategory:
@@ -582,7 +582,6 @@ const EditProductModal = ({ productId }) => {
     console.log(values);
     onOpen();
   };
-  let demoPrice = "550";
 
   return (
     <React.Fragment>
@@ -719,17 +718,6 @@ const EditProductModal = ({ productId }) => {
           </ModalBody>
 
           <ModalFooter>
-            <FormControl>
-              <FormLabel>Publish</FormLabel>
-              <Switch
-                id="visibility"
-                size="lg"
-                // colorScheme="brand.400"
-                onChange={() => {
-                  setvalues({ ...values, visibility: !visibility });
-                }}
-              />
-            </FormControl>
             <FormControl textAlign={"right"}>
               <Button bg="brand.400" color="white" onClick={onSubmit}>
                 Update Product
@@ -775,41 +763,36 @@ const DeleteProductButton = ({ onClick }) => {
 
 const Products = () => {
   const auth = isAuthenticated();
+  const seller = getSellerData();
   const jwt = auth.data?.jwt;
   const [products, setProducts] = useState([]);
   const toast = useToast();
 
   const getProducts = async () => {
-    let res = await axios.get(
-      "https://cloudmagician.co.in/api/ecommerce-products?populate=*",
-      {
+    if (typeof window !== "undefined") {
+      let res = await axios.get(`${API_URL}seller-products/${seller?.id}`, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${jwt}`,
         },
-      }
-    );
-    console.log(res);
-    return res;
+      });
+      console.log("hellaaaa", res);
+      setProducts(res.data?.ecommerce_products);
+    }
   };
 
   useEffect(() => {
-    getProducts().then((data) => {
-      setProducts(data.data.data);
-      console.log(products);
-    });
+    if (typeof window !== "undefined") {
+      getProducts();
+    }
   }, []);
 
   const handleDelete = async (id) => {
-    let res = await axios.delete(
-      `https://cloudmagician.co.in/api/ecommerce-products/${id}`,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${jwt}`,
-        },
-      }
-    );
+    let res = await axios.delete(`${API_URL}ecommerce-products/${id}`, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     if (res.error) {
       toast({
         title: "Error",
@@ -862,10 +845,11 @@ const Products = () => {
               <Thead>
                 <Tr>
                   <Th>Product Name</Th>
+                  {/* <Th>Category</Th> */}
                   <Th>Sub-Category</Th>
                   <Th>Selling Price</Th>
                   <Th>Retail Price</Th>
-                  <Th>Availability</Th>
+                  <Th>Published</Th>
 
                   <Th>Actions</Th>
                 </Tr>
@@ -873,9 +857,7 @@ const Products = () => {
               <Tbody>
                 {products?.map((product, i) => {
                   console.log(product);
-                  console.log(
-                    product.attributes.product_image?.data?.attributes?.url
-                  );
+                  console.log(product.product_image?.url);
 
                   return (
                     <Tr key={i}>
@@ -884,29 +866,47 @@ const Products = () => {
                           <Image
                             boxSize="70px"
                             objectFit="cover"
-                            src={
-                              product.attributes.product_image?.data?.attributes
-                                ?.url
-                            }
+                            src={product.product_image?.url}
                             alt="product_img"
                             fallbackSrc="https://via.placeholder.com/70"
                             mr="2"
                           />
-                          <Text>{product.attributes.product_name}</Text>
+                          <Text>{product.product_name}</Text>
                         </Flex>
                       </Td>
-                      <Td>
+                      {/* <Td>
                         {
-                          product.attributes.ecommerce_subcategory?.data
-                            ?.attributes?.title
+                          product.ecommerce_category?.data
+                            ??.title
                         }
-                      </Td>
-                      <Td>${product.attributes.selling_price}</Td>
-                      <Td>${product.attributes.retail_price}</Td>
+                      </Td> */}
+                      <Td>{product.ecommerce_subcategory?.title}</Td>
+                      <Td>${product.selling_price}</Td>
+                      <Td>${product.retail_price}</Td>
                       <Td>
-                        <Badge colorScheme="green" textTransform={"none"}>
-                          In-Stock
-                        </Badge>
+                        <Button
+                          colorScheme="green"
+                          textTransform={"none"}
+                          onClick={async () => {
+                            let res = await axios.put(
+                              `${API_URL}ecommerce-products/${product.id}`,
+                              {
+                                data: {
+                                  visibility: !product.visibility,
+                                },
+                              },
+                              {
+                                headers: {
+                                  // "Content-Type": "multipart/form-data",
+                                  Authorization: `Bearer ${jwt}`,
+                                },
+                              }
+                            );
+                            getProducts();
+                          }}
+                        >
+                          {product.visibility ? "Hide" : "Publish"}
+                        </Button>
                       </Td>
 
                       <Td>
