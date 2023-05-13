@@ -42,7 +42,7 @@ import { signout } from "@/helper/auth";
 const LinkItems = [
   { name: "Dashboard", icon: FiHome, link: "/dashboard" },
   { name: "Manage Products", icon: FiTrendingUp, link: "/products" },
-  { name: "Manage Orders", icon: FiBox, link: "/orders" },
+  { name: "Order Info", icon: FiBox, link: "/orders" },
 ];
 
 export default function Sidebar({ children }) {
