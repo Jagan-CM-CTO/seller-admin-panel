@@ -39,6 +39,7 @@ export const data = {
     },
   ],
 };
+
 const Dashboard = () => {
   return (
     <>
@@ -62,10 +63,10 @@ const Dashboard = () => {
               rounded={"2xl"}
             >
               <StatLabel>{`Monthly Revenue`}</StatLabel>
-              <StatNumber>$32918</StatNumber>
+              <StatNumber>$0</StatNumber>
               <StatHelpText>
                 <StatArrow type="increase" />
-                33.09%
+                0%
               </StatHelpText>
             </Stat>
             <Stat
@@ -79,10 +80,10 @@ const Dashboard = () => {
               rounded={"2xl"}
             >
               <StatLabel>{`Today's Revenue`}</StatLabel>
-              <StatNumber>$598</StatNumber>
+              <StatNumber>$0</StatNumber>
               <StatHelpText>
                 <StatArrow type="decrease" />
-                9.05%
+                0%
               </StatHelpText>
             </Stat>
             <Stat
@@ -96,14 +97,14 @@ const Dashboard = () => {
               rounded={"2xl"}
             >
               <StatLabel>{`Total Units sold`}</StatLabel>
-              <StatNumber>237</StatNumber>
+              <StatNumber>0</StatNumber>
               <StatHelpText>
                 <StatArrow type="increase" />
-                36.05%
+                0%
               </StatHelpText>
             </Stat>
           </Flex>
-          <Flex justify={"space-around"} mt={10} height={"50vh"}>
+          {/* <Flex justify={"space-around"} mt={10} height={"50vh"}>
             <Bar
               data={data}
               options={{ responsive: false }}
@@ -126,7 +127,7 @@ const Dashboard = () => {
                 borderRadius: "15px",
               }}
             />
-          </Flex>
+          </Flex> */}
         </Sidebar>
       </main>
     </>
