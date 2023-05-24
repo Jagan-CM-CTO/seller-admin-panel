@@ -102,14 +102,9 @@ const SidebarContent = ({ onClose, ...rest }) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       <Flex justify={"center"} align={"center"} direction={"column"}>
-        <Avatar
-          size={"xl"}
-          src={
-            "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1148&q=80"
-          }
-        />
+        <Avatar size={"xl"} bg="gray.500" />
         <Text fontSize={"xl"} fontWeight="semibold" mt="2">
-          Hello Emiram!
+          Hello Seller!
         </Text>
       </Flex>
       {LinkItems.map((link, i) => (
@@ -203,12 +198,6 @@ const MobileNav = ({ onOpen, ...rest }) => {
       </Text>
 
       <HStack spacing={{ base: "0", md: "6" }}>
-        <IconButton
-          size="lg"
-          variant="ghost"
-          aria-label="open menu"
-          icon={<FiBell />}
-        />
         <Flex alignItems={"center"}>
           <Menu>
             <MenuButton
@@ -231,7 +220,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
                 >
                   <Text fontSize="sm">Emiram</Text>
                   <Text fontSize="xs" color="gray.600">
-                    Admin
+                    Seller
                   </Text>
                 </VStack>
                 <Box display={{ base: "none", md: "flex" }}>
