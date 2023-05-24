@@ -5,10 +5,6 @@ import { MdOutlineSearch } from "react-icons/md";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   useToast,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Menu,
   Text,
   Stack,
   InputGroup,
@@ -231,7 +227,6 @@ const Orders = () => {
   const toast = useToast();
 
   const updateStatus = async (id, status) => {
-    console.log("hurrehh", status);
     let auth = isAuthenticated();
     let jwt = auth.data?.jwt;
     let reqBody = { status: status };
@@ -290,343 +285,238 @@ const Orders = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Sidebar>
-          <Flex justify={"space-between"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              Manage Orders
-            </Text>
-          </Flex>
+        <Flex justify={"space-between"}>
+          <Text fontSize={"2xl"} fontWeight={"semibold"}>
+            Manage Orders
+          </Text>
+        </Flex>
 
-          <Flex
-            justify={"space-between"}
-            gap={10}
-            mt={4}
-            flexWrap={"wrap"}
-            px={2}
+        <Flex
+          justify={"space-between"}
+          gap={10}
+          mt={4}
+          flexWrap={"wrap"}
+          px={2}
+        >
+          <Stack
+            minWidth="23vw"
+            bg="white"
+            rounded={"md"}
+            overflow={"hidden"}
+            boxShadow={"2xl"}
           >
-            <Stack
-              minWidth="23vw"
-              bg="white"
-              rounded={"md"}
-              overflow={"hidden"}
-              boxShadow={"2xl"}
+            <Text
+              fontSize={22}
+              fontWeight={"semibold"}
+              bg={"brand.400"}
+              textAlign="center"
+              py={2}
+              color="white"
             >
-              <Text
-                fontSize={22}
-                fontWeight={"semibold"}
-                bg={"brand.400"}
-                textAlign="center"
-                py={2}
-                color="white"
-              >
-                Pending Orders
-              </Text>
-              <InputGroup
-                maxW="60vw"
-                mx="auto"
-                mt={6}
-                bg="white"
-                rounded="md"
-                // boxShadow={"2xl"}
-              >
-                <InputRightElement color="brand.400">
-                  <MdOutlineSearch />
-                </InputRightElement>
-                <Input
-                  type="text"
-                  name="Secrch"
-                  placeholder="Search..."
-                  onChange={(e) =>
-                    setPendingSearch(e.target.value.toLowerCase())
-                  }
-                  py={4}
-                />
-              </InputGroup>
-              <TableContainer bg={"#fff"} mt={5}>
-                <Table variant="simple">
-                  <Thead>
-                    <tr textAlign="center">
-                      <Th textAlign="center">Order ID</Th>
-                      <Th textAlign="right">Update Status</Th>
-                    </tr>
-                  </Thead>
-                  <Tbody>
-                    {orders
-                      .filter((order) => {
-                        if (!pendingSearch) {
-                          return true;
-                        }
-
-                        if (order.id?.toString().includes(pendingSearch)) {
-                          return true;
-                        }
-
-                        return false;
-                      })
-                      .filter((order) => order.attributes.status == "pending")
-                      .map((order, i) => {
-                        return (
-                          <Tr key={i}>
-                            <Td textAlign="center">
-                              <ViewOrderModal
-                                btnText={order.id}
-                                order={order}
-                                onUpdateStatus={() =>
-                                  updateStatus(order.id, "canceled")
-                                }
-                              />
-                            </Td>
-                            <Td textAlign="right">
-                              <Menu>
-                                <MenuButton
-                                  as={Button}
-                                  color="dark"
-                                  bg="white.600"
-                                  rightIcon={<ChevronDownIcon />}
-                                >
-                                  Update Status
-                                </MenuButton>
-                                <MenuList>
-                                  <MenuItem
-                                    as={Button}
-                                    onClick={() =>
-                                      updateStatus(order.id, "completed")
-                                    }
-                                  >
-                                    Mark as Completed
-                                  </MenuItem>
-                                  <MenuItem
-                                    as={Button}
-                                    onClick={() =>
-                                      updateStatus(order.id, "canceled")
-                                    }
-                                  >
-                                    Mark as Canceled
-                                  </MenuItem>
-                                </MenuList>
-                              </Menu>
-                            </Td>
-                          </Tr>
-                        );
-                      })}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            </Stack>
-            <Stack
-              minWidth="23vw"
+              Pending Orders
+            </Text>
+            <InputGroup
+              maxW="60vw"
+              mx="auto"
+              mt={6}
               bg="white"
-              rounded={"md"}
-              overflow={"hidden"}
-              boxShadow={"2xl"}
+              rounded="md"
+              // boxShadow={"2xl"}
             >
-              <Text
-                fontSize={22}
-                fontWeight={"semibold"}
-                bg={"brand.400"}
-                textAlign="center"
-                py={2}
-                color="white"
-              >
-                Completed Orders
-              </Text>
-              <InputGroup
-                mx={10}
-                mt={4}
-                mb={2}
-                bg="white"
-                rounded="none"
-                // boxShadow={"2xl"}
-              >
-                <InputRightElement color="brand.400">
-                  <MdOutlineSearch />
-                </InputRightElement>
-                <Input
-                  type="text"
-                  name="Secrch"
-                  placeholder="Search..."
-                  onChange={(e) =>
-                    setCompletedSearch(e.target.value.toLowerCase())
-                  }
-                  py={4}
-                />
-              </InputGroup>
-              <TableContainer bg={"#fff"} mt={5}>
-                <Table variant="simple">
-                  <Thead>
-                    <tr>
-                      <Th textAlign="center">Order ID</Th>
-                      <Th textAlign="right">Update Status</Th>
-                    </tr>
-                  </Thead>
-                  <Tbody>
-                    {orders
-                      .filter((order) => {
-                        if (!completedSearch) {
-                          return true;
-                        }
+              <InputRightElement color="brand.400">
+                <MdOutlineSearch />
+              </InputRightElement>
+              <Input
+                type="text"
+                name="Secrch"
+                placeholder="Search..."
+                onChange={(e) => setPendingSearch(e.target.value.toLowerCase())}
+                py={4}
+              />
+            </InputGroup>
+            <TableContainer bg={"#fff"} mt={5}>
+              <Table variant="simple">
+                <Thead>
+                  <tr textAlign="center">
+                    <Th textAlign="center">Order ID</Th>
+                  </tr>
+                </Thead>
+                <Tbody>
+                  {orders
+                    .filter((order) => {
+                      if (!pendingSearch) {
+                        return true;
+                      }
 
-                        if (order.id?.toString().includes(completedSearch)) {
-                          return true;
-                        }
+                      if (order.id?.toString().includes(pendingSearch)) {
+                        return true;
+                      }
 
-                        return false;
-                      })
-                      .filter((order) => order.attributes.status == "completed")
-                      .map((order, i) => {
-                        return (
-                          <Tr key={i}>
-                            <Td textAlign="center">
-                              <ViewOrderModal
-                                btnText={order.id}
-                                order={order}
-                              />
-                            </Td>
-                            <Td textAlign="right">
-                              <Menu>
-                                <MenuButton
-                                  as={Button}
-                                  color="dark"
-                                  bg="white.600"
-                                  rightIcon={<ChevronDownIcon />}
-                                >
-                                  Update Status
-                                </MenuButton>
-                                <MenuList>
-                                  <MenuItem
-                                    as={Button}
-                                    onClick={() =>
-                                      updateStatus(order.id, "pending")
-                                    }
-                                  >
-                                    Mark as Pending
-                                  </MenuItem>
-                                  <MenuItem
-                                    as={Button}
-                                    onClick={() =>
-                                      updateStatus(order.id, "canceled")
-                                    }
-                                  >
-                                    Mark as Canceled
-                                  </MenuItem>
-                                </MenuList>
-                              </Menu>
-                            </Td>
-                          </Tr>
-                        );
-                      })}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            </Stack>
-            <Stack
-              minWidth="23vw"
+                      return false;
+                    })
+                    .filter((order) => order.attributes.status == "pending")
+                    .map((order, i) => {
+                      return (
+                        <Tr key={i}>
+                          <Td textAlign="center">
+                            <ViewOrderModal
+                              btnText={order.id}
+                              order={order}
+                              onUpdateStatus={() =>
+                                updateStatus(order.id, "canceled")
+                              }
+                            />
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Stack>
+          <Stack
+            minWidth="23vw"
+            bg="white"
+            rounded={"md"}
+            overflow={"hidden"}
+            boxShadow={"2xl"}
+          >
+            <Text
+              fontSize={22}
+              fontWeight={"semibold"}
+              bg={"brand.400"}
+              textAlign="center"
+              py={2}
+              color="white"
+            >
+              Completed Orders
+            </Text>
+            <InputGroup
+              mx={10}
+              mt={4}
+              mb={2}
               bg="white"
-              rounded={"md"}
-              overflow={"hidden"}
-              boxShadow={"2xl"}
+              rounded="none"
+              // boxShadow={"2xl"}
             >
-              <Text
-                fontSize={22}
-                fontWeight={"semibold"}
-                bg={"brand.400"}
-                textAlign="center"
-                py={2}
-                color="white"
-              >
-                Canceled Orders
-              </Text>
-              <InputGroup
-                mx={10}
-                mt={4}
-                mb={2}
-                bg="white"
-                rounded="none"
-                // boxShadow={"2xl"}
-              >
-                <InputRightElement color="brand.400">
-                  <MdOutlineSearch />
-                </InputRightElement>
-                <Input
-                  type="text"
-                  name="Secrch"
-                  placeholder="Search..."
-                  onChange={(e) =>
-                    setCanceledSeach(e.target.value.toLowerCase())
-                  }
-                  py={4}
-                />
-              </InputGroup>
-              <TableContainer bg={"#fff"} mt={5}>
-                <Table variant="simple">
-                  <Thead>
-                    <tr>
-                      <Th textAlign={"center"}>Order ID</Th>
-                      <Th textAlign={"right"}>Update Status</Th>
-                    </tr>
-                  </Thead>
-                  <Tbody>
-                    {orders
-                      .filter((order) => {
-                        if (!canceledSeach) {
-                          return true;
-                        }
+              <InputRightElement color="brand.400">
+                <MdOutlineSearch />
+              </InputRightElement>
+              <Input
+                type="text"
+                name="Secrch"
+                placeholder="Search..."
+                onChange={(e) =>
+                  setCompletedSearch(e.target.value.toLowerCase())
+                }
+                py={4}
+              />
+            </InputGroup>
+            <TableContainer bg={"#fff"} mt={5}>
+              <Table variant="simple">
+                <Thead>
+                  <tr>
+                    <Th textAlign="center">Order ID</Th>
+                  </tr>
+                </Thead>
+                <Tbody>
+                  {orders
+                    .filter((order) => {
+                      if (!completedSearch) {
+                        return true;
+                      }
 
-                        if (order.id?.toString().includes(canceledSeach)) {
-                          return true;
-                        }
+                      if (order.id?.toString().includes(completedSearch)) {
+                        return true;
+                      }
 
-                        return false;
-                      })
-                      .filter((order) => order.attributes.status == "canceled")
-                      .map((order, i) => {
-                        return (
-                          <Tr key={i}>
-                            <Td textAlign="center">
-                              <ViewOrderModal
-                                btnText={order.id}
-                                order={order}
-                              />
-                            </Td>
-                            <Td textAlign="right">
-                              <Menu>
-                                <MenuButton
-                                  as={Button}
-                                  color="dark"
-                                  bg="white.600"
-                                  rightIcon={<ChevronDownIcon />}
-                                >
-                                  Update Status
-                                </MenuButton>
-                                <MenuList>
-                                  <MenuItem
-                                    as={Button}
-                                    onClick={() =>
-                                      updateStatus(order.id, "pending")
-                                    }
-                                  >
-                                    Mark as Pending
-                                  </MenuItem>
-                                  <MenuItem
-                                    as={Button}
-                                    onClick={() =>
-                                      updateStatus(order.id, "completed")
-                                    }
-                                  >
-                                    Mark as Completed
-                                  </MenuItem>
-                                </MenuList>
-                              </Menu>
-                            </Td>
-                          </Tr>
-                        );
-                      })}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            </Stack>
-          </Flex>
-        </Sidebar>
+                      return false;
+                    })
+                    .filter((order) => order.attributes.status == "completed")
+                    .map((order, i) => {
+                      return (
+                        <Tr key={i}>
+                          <Td textAlign="center">
+                            <ViewOrderModal btnText={order.id} order={order} />
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Stack>
+          <Stack
+            minWidth="23vw"
+            bg="white"
+            rounded={"md"}
+            overflow={"hidden"}
+            boxShadow={"2xl"}
+          >
+            <Text
+              fontSize={22}
+              fontWeight={"semibold"}
+              bg={"brand.400"}
+              textAlign="center"
+              py={2}
+              color="white"
+            >
+              Canceled Orders
+            </Text>
+            <InputGroup
+              mx={10}
+              mt={4}
+              mb={2}
+              bg="white"
+              rounded="none"
+              // boxShadow={"2xl"}
+            >
+              <InputRightElement color="brand.400">
+                <MdOutlineSearch />
+              </InputRightElement>
+              <Input
+                type="text"
+                name="Secrch"
+                placeholder="Search..."
+                onChange={(e) => setCanceledSeach(e.target.value.toLowerCase())}
+                py={4}
+              />
+            </InputGroup>
+            <TableContainer bg={"#fff"} mt={5}>
+              <Table variant="simple">
+                <Thead>
+                  <tr>
+                    <Th textAlign={"center"}>Order ID</Th>
+                  </tr>
+                </Thead>
+                <Tbody>
+                  {orders
+                    .filter((order) => {
+                      if (!canceledSeach) {
+                        return true;
+                      }
+
+                      if (order.id?.toString().includes(canceledSeach)) {
+                        return true;
+                      }
+
+                      return false;
+                    })
+                    .filter((order) => order.attributes.status == "canceled")
+                    .map((order, i) => {
+                      return (
+                        <Tr key={i}>
+                          <Td textAlign="center">
+                            <ViewOrderModal btnText={order.id} order={order} />
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Stack>
+        </Flex>
       </main>
     </>
   );
