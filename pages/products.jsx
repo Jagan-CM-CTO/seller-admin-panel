@@ -6,13 +6,11 @@ import React, { useEffect, useState } from "react";
 import {
   useToast,
   Image,
-  Switch,
   Text,
   Table,
   Thead,
   Divider,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -20,7 +18,6 @@ import {
   Flex,
   Button,
   Icon,
-  Badge,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -53,7 +50,7 @@ import { useRouter } from "next/router";
 import { getSellerData, isAuthenticated } from "@/helper/auth";
 import { API_URL } from "@/helper/API";
 
-const AddProductModal = () => {
+const AddProductModal = ({ getProducts }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -62,7 +59,7 @@ const AddProductModal = () => {
     short_description: "",
     long_description: "",
     selling_price: "",
-    retail_price: "",
+    seller_price: "",
     ecommerce_category: "",
     ecommerce_subcategory: "",
     product_image: "",
@@ -79,7 +76,7 @@ const AddProductModal = () => {
     short_description,
     long_description,
     selling_price,
-    retail_price,
+    seller_price,
     ecommerce_category,
     ecommerce_subcategory,
     product_image,
@@ -127,8 +124,7 @@ const AddProductModal = () => {
   };
 
   const seller = getSellerData();
-
-  let sellerId = seller?.seller_account?.id;
+  let sellerId = seller?.id;
   const onSubmit = (event) => {
     event.preventDefault();
 
@@ -148,7 +144,7 @@ const AddProductModal = () => {
           short_description: "",
           long_description: "",
           selling_price: "",
-          retail_price: "",
+          seller_price: "",
           // ecommerce_category: "",
           ecommerce_subcategory: "",
         });
@@ -161,7 +157,7 @@ const AddProductModal = () => {
           isClosable: true,
         });
         onClose();
-        router.reload();
+        getProducts();
       }
     });
   };
@@ -244,12 +240,12 @@ const AddProductModal = () => {
                 </NumberInput>
               </FormControl>
               <FormControl ml={4}>
-                <FormLabel>Retail Price</FormLabel>
+                <FormLabel>{"Seller's Price"}</FormLabel>
                 <NumberInput>
                   <NumberInputField
-                    onChange={handleChange("retail_price")}
-                    name="retail_price"
-                    value={retail_price}
+                    onChange={handleChange("seller_price")}
+                    name="seller_price"
+                    value={seller_price}
                   />
                 </NumberInput>
               </FormControl>
@@ -312,7 +308,7 @@ const ViewProductModal = ({ productId }) => {
     short_description: "",
     long_description: "",
     selling_price: "",
-    retail_price: "",
+    seller_price: "",
     // ecommerce_category: "",
     ecommerce_subcategory: "",
     product_image: "",
@@ -329,9 +325,6 @@ const ViewProductModal = ({ productId }) => {
       `${API_URL}ecommerce-products/${productId}?populate=*`
     );
     let data = await res.data.data;
-    console.log(data);
-    console.log(data.attributes.selling_price);
-    console.log(data.attributes.retail_price);
 
     setvalues({
       ...values,
@@ -347,8 +340,8 @@ const ViewProductModal = ({ productId }) => {
       selling_price: data.attributes.selling_price
         ? data.attributes.selling_price
         : "",
-      retail_price: data.attributes.retail_price
-        ? data.attributes.retail_price
+      seller_price: data.attributes.seller_price
+        ? data.attributes.seller_price
         : "",
       ecommerce_category:
         data.attributes?.ecommerce_category?.data?.attributes?.title,
@@ -394,7 +387,7 @@ const ViewProductModal = ({ productId }) => {
             <Text fontSize={"sm"} as={"b"} mt={8}>
               Retail Price
             </Text>
-            <Text mb={2}>${values.retail_price}</Text>
+            <Text mb={2}>${values.seller_price}</Text>
             <Divider />
             <Text fontSize={"sm"} as={"b"} mt={8}>
               Selling Price
@@ -424,7 +417,7 @@ const ViewProductModal = ({ productId }) => {
   );
 };
 
-const EditProductModal = ({ productId }) => {
+const EditProductModal = ({ productId, getProducts }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const [values, setvalues] = useState({
@@ -432,7 +425,7 @@ const EditProductModal = ({ productId }) => {
     short_description: "",
     long_description: "",
     selling_price: "",
-    retail_price: "",
+    seller_price: "",
     // ecommerce_category: "",
     ecommerce_subcategory: "",
 
@@ -449,7 +442,7 @@ const EditProductModal = ({ productId }) => {
     short_description,
     long_description,
     selling_price,
-    retail_price,
+    seller_price,
     // ecommerce_category,
     ecommerce_subcategory,
     product_image,
@@ -523,7 +516,7 @@ const EditProductModal = ({ productId }) => {
           short_description: "",
           long_description: "",
           selling_price: "",
-          retail_price: "",
+          seller_price: "",
           ecommerce_subcategory: "",
         });
         console.log(data);
@@ -535,7 +528,7 @@ const EditProductModal = ({ productId }) => {
           isClosable: true,
         });
         onClose();
-        router.reload();
+        getProducts();
       }
     });
   };
@@ -569,8 +562,8 @@ const EditProductModal = ({ productId }) => {
       selling_price: data.attributes.selling_price
         ? data.attributes.selling_price
         : "",
-      retail_price: data.attributes.retail_price
-        ? data.attributes.retail_price
+      seller_price: data.attributes.seller_price
+        ? data.attributes.seller_price
         : "",
 
       // ecommerce_category:
@@ -664,9 +657,9 @@ const EditProductModal = ({ productId }) => {
                 <Input
                   type="number"
                   placeholder="Retail Price"
-                  onChange={handleChange("retail_price")}
-                  name="retail_price"
-                  value={retail_price}
+                  onChange={handleChange("seller_price")}
+                  name="seller_price"
+                  value={seller_price}
                 />
               </FormControl>
             </Flex>
@@ -731,9 +724,6 @@ const EditProductModal = ({ productId }) => {
 };
 
 const DeleteProductButton = ({ onClick }) => {
-  const { isOpen, onToggle, onClose } = useDisclosure();
-  const toast = useToast();
-
   return (
     <Popover placement="right">
       <PopoverTrigger>
@@ -824,110 +814,109 @@ const Products = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Sidebar>
-          <Flex justify={"space-between"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              Manage Products
-            </Text>
-            <AddProductModal />
-          </Flex>
+        <Flex justify={"space-between"}>
+          <Text fontSize={"2xl"} fontWeight={"semibold"}>
+            Manage Products
+          </Text>
 
-          <TableContainer
-            bg={"#fff"}
-            rounded={10}
-            shadow={30}
-            overflowX={"scroll"}
-            boxShadow={"md"}
-            p={2}
-            mt={5}
-          >
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th>Product Name</Th>
-                  {/* <Th>Category</Th> */}
-                  <Th>Sub-Category</Th>
-                  <Th>Selling Price</Th>
-                  <Th>Retail Price</Th>
-                  <Th>Published</Th>
+          <AddProductModal getProducts={getProducts} />
+        </Flex>
 
-                  <Th>Actions</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {products?.map((product, i) => {
-                  console.log(product);
-                  console.log(product.product_image?.url);
+        <TableContainer
+          bg={"#fff"}
+          rounded={10}
+          shadow={30}
+          overflowX={"scroll"}
+          boxShadow={"md"}
+          p={2}
+          mt={5}
+        >
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Product Name</Th>
+                {/* <Th>Category</Th> */}
+                <Th>Sub-Category</Th>
+                <Th>Selling Price</Th>
+                <Th>Seller&apos;s Price</Th>
+                <Th>Published</Th>
 
-                  return (
-                    <Tr key={i}>
-                      <Td>
-                        <Flex align="center">
-                          <Image
-                            boxSize="70px"
-                            objectFit="cover"
-                            src={product.product_image?.url}
-                            alt="product_img"
-                            fallbackSrc="https://via.placeholder.com/70"
-                            mr="2"
-                          />
-                          <Text>{product.product_name}</Text>
-                        </Flex>
-                      </Td>
-                      {/* <Td>
+                <Th>Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {products?.map((product, i) => {
+                console.log(product);
+                console.log(product.product_image?.url);
+
+                return (
+                  <Tr key={i}>
+                    <Td>
+                      <Flex align="center">
+                        <Image
+                          boxSize="70px"
+                          objectFit="cover"
+                          src={product.product_image?.url}
+                          alt="product_img"
+                          fallbackSrc="https://via.placeholder.com/70"
+                          mr="2"
+                        />
+                        <Text>{product.product_name}</Text>
+                      </Flex>
+                    </Td>
+                    {/* <Td>
                         {
                           product.ecommerce_category?.data
                             ??.title
                         }
                       </Td> */}
-                      <Td>{product.ecommerce_subcategory?.title}</Td>
-                      <Td>${product.selling_price}</Td>
-                      <Td>${product.retail_price}</Td>
-                      <Td>
-                        <Button
-                          colorScheme="green"
-                          textTransform={"none"}
-                          onClick={async () => {
-                            let res = await axios.put(
-                              `${API_URL}ecommerce-products/${product.id}`,
-                              {
-                                data: {
-                                  visibility: !product.visibility,
-                                },
+                    <Td>{product.ecommerce_subcategory?.title}</Td>
+                    <Td>${product.selling_price}</Td>
+                    <Td>${product.seller_price}</Td>
+                    <Td>
+                      <Button
+                        colorScheme="green"
+                        textTransform={"none"}
+                        onClick={async () => {
+                          let res = await axios.put(
+                            `${API_URL}ecommerce-products/${product.id}`,
+                            {
+                              data: {
+                                visibility: !product.visibility,
                               },
-                              {
-                                headers: {
-                                  // "Content-Type": "multipart/form-data",
-                                  Authorization: `Bearer ${jwt}`,
-                                },
-                              }
-                            );
-                            getProducts();
-                          }}
-                        >
-                          {product.visibility ? "Hide" : "Publish"}
-                        </Button>
-                      </Td>
+                            },
+                            {
+                              headers: {
+                                // "Content-Type": "multipart/form-data",
+                                Authorization: `Bearer ${jwt}`,
+                              },
+                            }
+                          );
+                          getProducts();
+                        }}
+                      >
+                        {product.visibility ? "Hide" : "Publish"}
+                      </Button>
+                    </Td>
 
-                      <Td>
-                        <ViewProductModal productId={product.id}>
-                          View
-                        </ViewProductModal>
-                        <EditProductModal
-                          onClick={() => handleDelete(product.id)}
-                          productId={product.id}
-                        />
-                        <DeleteProductButton
-                          onClick={() => handleDelete(product.id)}
-                        />
-                      </Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
-          </TableContainer>
-        </Sidebar>
+                    <Td>
+                      <ViewProductModal productId={product.id}>
+                        View
+                      </ViewProductModal>
+                      <EditProductModal
+                        productId={product.id}
+                        getProducts={getProducts}
+                      />
+                      <DeleteProductButton
+                        onClick={() => handleDelete(product.id)}
+                      />
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </TableContainer>
       </main>
     </>
   );
