@@ -1,20 +1,12 @@
 import React from "react";
 
 import {
-  Box,
   Flex,
-  Heading,
-  Input,
-  Button,
-  Stack,
   Stat,
   StatLabel,
   StatNumber,
   StatHelpText,
   StatArrow,
-  StatGroup,
-  HStack,
-  Text,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import Sidebar from "@/components/Sidebar";
@@ -50,61 +42,60 @@ const Dashboard = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Sidebar>
-          <Flex justify={"space-evenly"} gap={20} px={4}>
-            <Stat
-              px={10}
-              py={6}
-              bgGradient={"linear(to-bl, #DA0155, #fc6767)"}
-              color="#fff"
-              alignItems={"center"}
-              display={"flex"}
-              width={"fit-content"}
-              rounded={"2xl"}
-            >
-              <StatLabel>{`Monthly Revenue`}</StatLabel>
-              <StatNumber>$0</StatNumber>
-              <StatHelpText>
-                <StatArrow type="increase" />
-                0%
-              </StatHelpText>
-            </Stat>
-            <Stat
-              px={10}
-              py={2}
-              bgGradient={"linear(to-bl, #DA0155, #fc6767)"}
-              color="#fff"
-              alignItems={"center"}
-              display={"flex"}
-              width={"fit-content"}
-              rounded={"2xl"}
-            >
-              <StatLabel>{`Today's Revenue`}</StatLabel>
-              <StatNumber>$0</StatNumber>
-              <StatHelpText>
-                <StatArrow type="decrease" />
-                0%
-              </StatHelpText>
-            </Stat>
-            <Stat
-              px={10}
-              py={2}
-              bgGradient={"linear(to-bl, #DA0155, #fc6767)"}
-              color="#fff"
-              alignItems={"center"}
-              display={"flex"}
-              width={"fit-content"}
-              rounded={"2xl"}
-            >
-              <StatLabel>{`Total Units sold`}</StatLabel>
-              <StatNumber>0</StatNumber>
-              <StatHelpText>
-                <StatArrow type="increase" />
-                0%
-              </StatHelpText>
-            </Stat>
-          </Flex>
-          {/* <Flex justify={"space-around"} mt={10} height={"50vh"}>
+        <Flex justify={"space-evenly"} gap={20} px={4}>
+          <Stat
+            px={10}
+            py={6}
+            bgGradient={"linear(to-bl, #DA0155, #fc6767)"}
+            color="#fff"
+            alignItems={"center"}
+            display={"flex"}
+            width={"fit-content"}
+            rounded={"2xl"}
+          >
+            <StatLabel>{`Monthly Revenue`}</StatLabel>
+            <StatNumber>$0</StatNumber>
+            <StatHelpText>
+              <StatArrow type="increase" />
+              0%
+            </StatHelpText>
+          </Stat>
+          <Stat
+            px={10}
+            py={2}
+            bgGradient={"linear(to-bl, #DA0155, #fc6767)"}
+            color="#fff"
+            alignItems={"center"}
+            display={"flex"}
+            width={"fit-content"}
+            rounded={"2xl"}
+          >
+            <StatLabel>{`Today's Revenue`}</StatLabel>
+            <StatNumber>$0</StatNumber>
+            <StatHelpText>
+              <StatArrow type="decrease" />
+              0%
+            </StatHelpText>
+          </Stat>
+          <Stat
+            px={10}
+            py={2}
+            bgGradient={"linear(to-bl, #DA0155, #fc6767)"}
+            color="#fff"
+            alignItems={"center"}
+            display={"flex"}
+            width={"fit-content"}
+            rounded={"2xl"}
+          >
+            <StatLabel>{`Total Units sold`}</StatLabel>
+            <StatNumber>0</StatNumber>
+            <StatHelpText>
+              <StatArrow type="increase" />
+              0%
+            </StatHelpText>
+          </Stat>
+        </Flex>
+        {/* <Flex justify={"space-around"} mt={10} height={"50vh"}>
             <Bar
               data={data}
               options={{ responsive: false }}
@@ -128,7 +119,6 @@ const Dashboard = () => {
               }}
             />
           </Flex> */}
-        </Sidebar>
       </main>
     </>
   );
